@@ -91,9 +91,9 @@
 
 - (id <FsprgEmbeddedStoreDelegate>)delegate
 {
-	if(delegate == nil) {
-		NSLog(@"No delegate has been assigned to FsprgEmbeddedStoreController!");
-	}
+//	if(delegate == nil) {
+//		NSLog(@"No delegate has been assigned to FsprgEmbeddedStoreController!");
+//	}
 	return delegate;
 }
 
@@ -273,6 +273,11 @@
 		}
 		[[self delegate] didLoadPage:newURL ofType:newPageType];
 	}
+    
+    if ([[self delegate] respondsToSelector:@selector(webView:didFinishLoadForFrame:)])
+    {
+        [[self delegate] webView:sender didFinishLoadForFrame:frame];
+    }
 }
 
 - (void)webView:(WebView *)sender didFailProvisionalLoadWithError:(NSError *)error forFrame:(WebFrame *)frame
@@ -283,6 +288,14 @@
 - (void)webView:(WebView *)sender didFailLoadWithError:(NSError *)error forFrame:(WebFrame *)frame
 {
 	[[self delegate] webView:sender didFailLoadWithError:error forFrame:frame];
+}
+
+- (void)webView:(WebView *)sender didClearWindowObject:(WebScriptObject *)windowObject forFrame:(WebFrame *)frame
+{
+    if ([[self delegate] respondsToSelector:@selector(webView:didClearWindowObject:forFrame:)])
+    {
+        [[self delegate] webView:sender didClearWindowObject:windowObject forFrame:frame];
+    }
 }
 
 #pragma mark - WebUIDelegate
@@ -302,7 +315,7 @@
 - (WebView *)webView:(WebView *)sender createWebViewWithRequest:(NSURLRequest *)request
 {
 	NSWindow *window = [[NSWindow alloc] initWithContentRect:NSMakeRect(0,0,0,0)
-										 styleMask:(NSClosableWindowMask|NSResizableWindowMask)
+										 styleMask:(NSTitledWindowMask|NSClosableWindowMask|NSResizableWindowMask)
 										 backing:NSBackingStoreBuffered
 										 defer:NO];
 	WebView *subWebView = [[[WebView alloc] initWithFrame:NSMakeRect(0,0,0,0)] autorelease];
@@ -311,6 +324,13 @@
 	[window makeKeyAndOrderFront:sender];
 	
 	return subWebView;
+}
+
+- (NSArray *)webView:(WebView *)sender contextMenuItemsForElement:(NSDictionary *)element defaultMenuItems:(NSArray *)defaultMenuItems
+{
+    if ([[self delegate] respondsToSelector:@selector(webView:contextMenuItemsForElement:defaultMenuItems:)])
+        return [[self delegate] webView:sender contextMenuItemsForElement:element defaultMenuItems:defaultMenuItems];
+    return defaultMenuItems;
 }
 
 #pragma mark - WebResourceLoadDelegate
