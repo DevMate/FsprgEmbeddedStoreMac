@@ -73,6 +73,7 @@
 			[webView setUIDelegate:self];
 			[webView setResourceLoadDelegate:self];
 			[webView setApplicationNameForUserAgent:@"FSEmbeddedStore/2.0"];
+            webView.preferences.plugInsEnabled = NO;
 			[[NSNotificationCenter defaultCenter] addObserver:self 
 													 selector:@selector(webViewFrameChanged:) 
 														 name:NSViewFrameDidChangeNotification 
