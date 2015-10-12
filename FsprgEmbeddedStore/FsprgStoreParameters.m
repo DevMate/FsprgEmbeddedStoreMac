@@ -126,11 +126,7 @@ static NSMutableDictionary *keyPathsForValuesAffecting;
 
 	NSString *urlAsStr;
 	if([kFsprgOrderProcessDetail isEqualTo:[self orderProcessType]]) {
-		NSString *protocol = @"http";
-		if([self hasContactDefaults]) {
-			protocol = @"https";
-		}
-		urlAsStr = [NSString stringWithFormat:@"%@://sites.fastspring.com/%@/product/%@", protocol, storeIdEncoded, productIdEncoded];
+		urlAsStr = [NSString stringWithFormat:@"https://sites.fastspring.com/%@/product/%@", storeIdEncoded, productIdEncoded];
 	} else if([kFsprgOrderProcessInstant isEqualTo:[self orderProcessType]]) {
 		urlAsStr = [NSString stringWithFormat:@"https://sites.fastspring.com/%@/instant/%@", storeIdEncoded, productIdEncoded];
 	} else if ([kFsprgOrderProcessCheckout isEqualTo:[self orderProcessType]]) {
